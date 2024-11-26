@@ -5,6 +5,9 @@
 #define esqFrente 32
 #define esqTras   33
 
+#define pinDigital //26 Preciso trocar 
+#define pinAnalogico 36
+
 #define FRENTE 1
 #define PARADO 0
 #define TRAS  -1
@@ -18,25 +21,17 @@
 #endif
 BluetoothSerial SerialBT;
 char ch;
-//
-//PS2X ps2x;
-//
-//void configuraControle() {
-//  int erroControle = ps2x.config_gamepad(13, 11, 10, 12, true, true);
-//  if (!erroControle) {
-//    Serial.println("Controle encontrado");
-//  } else {
-//    Serial.println("Controle não encontrado");
-//    while (erroControle) {
-//      if (bitRead(millis(), 11)) erroControle = ps2x.config_gamepad(13, 11, 10, 12, true, true);
-//    }
-//  }
-//}
+
+int valorDigital;
+int valorAnalogico;
 
 void setup() {
   Serial.begin(115200);
 
-  //configuraControle();
+
+  Serial.begin(115200);
+  pinMode(pinDigital, INPUT);
+  pinMode(pinAnalogico, INPUT);
 
   SerialBT.begin("LITTLE TIGER"); //Bluetooth device name
   Serial.println("O dispositivo foi iniciado, agora você pode parar!");
@@ -55,15 +50,11 @@ void setup() {
 
 void andarFrente(){
   // MOTOR DIREITO PARA FRENTE
-//    analogWrite(dirFrente,  velocidadeD);
-//    analogWrite(dirTras,    LOW);
 
     digitalWrite(dirFrente, HIGH);
     digitalWrite(dirTras, LOW);
 
     // MOTOR ESQUERDO PARA FRENTE
-//    analogWrite(esqFrente,  velocidadeE);
-//    analogWrite(esqTras,    LOW);
 
     digitalWrite(esqFrente, HIGH);
     digitalWrite(esqTras, LOW);
@@ -71,9 +62,6 @@ void andarFrente(){
 
 void andarTras(){
   // MOTOR DIREITO PARA TRAS
-//    analogWrite(dirFrente,  LOW);
-//    analogWrite(dirTras,    velocidadeE);
-
     parar();
     delay(50);
 
@@ -81,8 +69,6 @@ void andarTras(){
     digitalWrite(dirTras, HIGH);
 
     // MOTOR ESQUERDO PARA TRAS
-//    analogWrite(esqFrente,  LOW);
-//    analogWrite(esqTras,    velocidadeD);
 
     digitalWrite(esqFrente, LOW);
     digitalWrite(esqTras, HIGH);
@@ -90,31 +76,22 @@ void andarTras(){
 
 void virarDireita(){
   // MOTOR DIREITO PARA TRAS
-//    analogWrite(dirFrente,  LOW);
-//    analogWrite(dirTras,    velocidadeD);
 
     digitalWrite(dirFrente, HIGH);
     digitalWrite(dirTras, LOW);
 
     // MOTOR ESQUERDO PARA FRENTE
-//    analogWrite(esqFrente,  velocidadeE);
-//    analogWrite(esqTras,    LOW);
-
     digitalWrite(esqFrente, LOW);
     digitalWrite(esqTras, LOW);
 }
 
 void virarEsquerda(){
   // MOTOR DIREITO PARA FRENTE
-//    analogWrite(dirFrente,  velocidadeD);
-//    analogWrite(dirTras,    LOW);
 
     digitalWrite(dirFrente, LOW);
     digitalWrite(dirTras, LOW);
 
     // MOTOR ESQUERDO PARA TRAS
-//    analogWrite(esqFrente,  LOW);
-//    analogWrite(esqTras,    velocidadeE);
 
     digitalWrite(esqFrente, HIGH);
     digitalWrite(esqTras, LOW);
@@ -139,19 +116,15 @@ void loop() {
     if (ch == 'D')  {virarDireita();}
     if (ch == 'E')  {virarEsquerda();}
     }
-//  ps2x.read_gamepad();
-//
-//  if (ps2x.Button(PSB_PAD_UP)) {
-//    andarFrente();
-//  } else if (ps2x.Button(PSB_PAD_RIGHT)) {
-//    virarDireita();
-//  } else if (ps2x.Button(PSB_PAD_LEFT)) {
-//    virarEsquerda();
-//  } else if (ps2x.Button(PSB_PAD_DOWN)) {
-//    andarTras();
-//  } else {
-//    parar();
-//  }
+
+    valorDigital = digitalRead(pinDigital);
+  valorAnalogico = analogRead(pinAnalogico);
+  Serial.print("Leitura Digital: ");
+  Serial.println(valorDigital);
+  Serial.print("Leitura Analogica: ");
+  Serial.println(valorAnalogico);
+  Serial.println();
+  //delay(500);
 
   delay(50);
 }
